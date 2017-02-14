@@ -1,0 +1,75 @@
+{
+  "parent": {
+    "id":1,
+    "email": "parent1@gmail.com",
+    "name" : "Yosi Levi",
+    "joinedTime": "feb 2 2017",
+    "gender": "female",
+    "profilePicture":"",
+    "coverPhoto":"",
+    "age": 28,
+    "location":"",
+    "address":{
+      "city": "Tel Aviv",
+      "street": "Menachem Begin",
+      "houseNumber": 36
+    },
+    "languages": ["spanish","hebrew","english"],
+    "timezone": "GMT +8",
+    "invites": [],
+    "children": {
+      "allergies": [
+        "milk",
+        "dust"
+      ],
+      "specialNeeds": [],
+      "Hobbies": [],
+      "schoolAddress": {
+        "city": "Tel Aviv",
+        "street": "Arlozorov",
+        "houseNumber": 58
+      },
+      "expertise":[],
+      "age": 2.2,
+      "name": "Ben Levi"
+    },
+    "partner": "",
+    "maxPrice": 50,
+    "matches": []
+  },
+  "sitter" : {
+    "id":2,
+    "email": "sitter1@gmail.com",
+    "name" : "Anat Cohen",
+    "joinedTime": "feb 08 2017",
+    "gender": "female",
+    "profilePicture": "",
+    "coverPhoto": "",
+    "age": 24,
+    "location":"",
+    "address":{
+      "city": "Ramat Gan",
+      "street": "Negba",
+      "houseNumber": 4
+    },
+    "languages":["english","arabic","hebrew"],
+    "timezone":"GMT +6",
+    "invites":[],
+    "rating" :4.2,
+    "education":[],
+    "personalityScore":85,
+    "minAge":0,
+    "maxAge":4,
+    "currencyType":"dollar",
+    "hourFee": 20,
+    "workingHours":[],
+    "availableNow" :true,
+    "experience":3,
+    "hobbies" :["reading","sleeping","studying"],
+    "mobility":false,
+    "specialNeeds":[],
+    "review":[]
+  }
+}
+
+
