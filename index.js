@@ -7,12 +7,10 @@ var express		= require('express'),
     cors 		= require('cors'),
     bodyParser 	= require('body-parser'),
     port 		= process.env.PORT || 3000,
-    app 		= express(),
-    localJson   = require('./data.data.json')
+    app 		= express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(__dirname + '/build/'));
 app.use(cors());
 app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -20,14 +18,16 @@ app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, content-type, Accept');
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader("Content-Type", "text/html");
+    app.set('json spaces', 4);
     res.setHeader("Content-Type", "application/json");
     next();
 });
 
-app.post('/getMatchScore', function (req, res) {
-    console.log
+app.get('/getMatchScore', function (req, res) {
+    console.log(matcher.getMatchScore());
+    res.status(200).json({'data':matcher.getMatchScore()});
     //res.status(200).json(SittersData.getParentByEmail(req.body.email));
-    res.status(200).json({'data': req.body.parent});
+    //res.status(200).json({'data': req.body.parent});
 });
 
 
