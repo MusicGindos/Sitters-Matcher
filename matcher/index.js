@@ -102,6 +102,7 @@ var computeScore = function(parent,sitter,filter,distance,callback){
     else{
         locationScore = 100 - ((distance-5) * 2);
     }
+
     if(sitter.experience >= 4)  // calculate experience by years
         experienceScore = 100;
     else if(sitter.experience >=3)
