@@ -35,43 +35,41 @@ var localJson = function(path){
 
 };
 
-var computeDistance = function(query,callback){
+var computeSync = function(origin,destination,callback){
     distance.get(
         {
-            origin: 'San Francisco, CA',
-            destination: 'San Diego, CA'
+            origin: origin,
+            destination: destination
         },
         function(err, data) {
             if (err) {
                 console.error(err);
                 return;
             }
-            console.log('done');
             maindata = data;
             finish = false;
-            callback(data)
-
-            //your custom logic...
+            callback(data);
         });
 };
-
+function computeDistance(origin,destination) {
+    computeSync(origin,destination, function(result){
+        maindata = result;
+    });
+    while(finish) {
+        require('deasync').sleep(100); // sync for google-distance api
+    }
+    return maindata;
+}
 
 exports.getMatchScore = function(req,res,next,callback){
     var data = jsonfile.readFileSync(localJSONPath);
-    var dd;
-    var asyncToSync = syncFunc();
+    var origin = data.parent.address.street + ' ' + data.parent.address.houseNumber + ' ' + data.parent.address.city;
+    var destination = data.sitter.address.street + ' ' + data.sitter.address.houseNumber + ' ' + data.sitter.address.city;
 
-    function syncFunc() {
-        computeDistance("hello", function(result){
-            dd = result;
-        });
-        while(finish) {
-            require('deasync').sleep(100);
-        }
-        console.log('111');
-        return dd;
-    }
-    return asyncToSync;
+    var distance = computeDistance(origin,destination);
+
+
+    return distance;
 
 };
 
