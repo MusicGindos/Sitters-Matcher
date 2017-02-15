@@ -22,7 +22,6 @@
     "deasync": "^0.1.9",
     "express": "^4.14.1",
     "google-distance": "^1.0.1",
-    "google-distance-matrix": "0.0.3",
     "jsonfile": "^2.4.0",
     "lodash": "^4.17.4",
     "sync": "^0.2.5"
