@@ -53,6 +53,20 @@ var computeDistance = function(origin,destination) { // make compute distance sy
 };
 
 var computeMatchScore = function(parent,sitter,filter,distance) {  // make compute score sync with flag and while loop
+    if(data.parent.address.latitude != 0 && data.parent.address.longitude != 0){  // compute by latitude and longitude
+        origin = data.parent.address.latitude + ',' + data.parent.address.longitude
+    }
+    else{ //compute by address
+        origin = data.parent.address.street + ' ' + data.parent.address.houseNumber + ' ' + data.parent.address.city;
+    }
+    if(data.sitter.address.latitude != 0 && data.sitter.address.longitude != 0){// compute by latitude and longitude
+        destination = data.sitter.address.latitude + ',' + data.sitter.address.longitude
+    }
+    else{ //compute by address
+        destination = data.sitter.address.street + ' ' + data.sitter.address.houseNumber + ' ' + data.sitter.address.city;
+    }
+
+    distance = computeDistance(origin,destination);
     computeScore(parent,sitter,filter,distance, function(result){
         maindata = result;
     });
@@ -178,10 +192,7 @@ var computeScore = function(parent,sitter,filter,distance,callback){ // compute 
 
 exports.getMatchScore = function(){
     data = jsonfile.readFileSync(localJSONPath);
-    origin = data.parent.address.street + ' ' + data.parent.address.houseNumber + ' ' + data.parent.address.city;
-    destination = data.sitter.address.street + ' ' + data.sitter.address.houseNumber + ' ' + data.sitter.address.city;
-    distance = computeDistance(origin,destination);
-    matchScore = computeMatchScore(data.parent,data.sitter,'location',distance);
+    matchScore = computeMatchScore(data.parent,data.sitter,null,distance);
     if(matchScore == 0){
         return {"match_score":0};  // no match
     }

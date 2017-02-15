@@ -10,9 +10,11 @@
     "age": 28,
     "location":"",
     "address":{
-      "city": "Tel Aviv",
+      "city": "Eilat",
       "street": "Menachem Begin",
-      "houseNumber": 36
+      "houseNumber": 36,
+      "latitude": 0,
+      "longitude": 0
     },
     "languages": ["spanish","hebrew","english"],
     "timezone": "GMT +8",
@@ -27,7 +29,9 @@
       "schoolAddress": {
         "city": "Tel Aviv",
         "street": "Arlozorov",
-        "houseNumber": 58
+        "houseNumber": 58,
+        "latitude": 32.069042,
+        "longitude": 34.776953
       },
       "expertise":[],
       "age": 2.2,
@@ -50,7 +54,9 @@
     "address":{
       "city": "Ramat Gan",
       "street": "Negba",
-      "houseNumber": 4
+      "houseNumber": 4,
+      "latitude": 32.066060,
+      "longitude": 34.787897
     },
     "languages":["english","arabic","hebrew"],
     "timezone":"GMT +6",
