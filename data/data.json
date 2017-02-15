@@ -63,7 +63,7 @@
     "currencyType":"dollar",
     "hourFee": 20,
     "workingHours":[],
-    "availableNow" :true,
+    "availableNow": true,
     "experience":3,
     "hobbies" :["reading","sleeping","studying"],
     "mobility":false,
