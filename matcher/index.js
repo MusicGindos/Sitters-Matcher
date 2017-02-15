@@ -8,7 +8,7 @@ var express		  = require('express'),
     DEBUG         = true,
     localJSONPath = "data/data.json",
     jsonfile      = require('jsonfile'),
-    distance      = require('google-distance'),
+    googleDistance= require('google-distance'),
     finish        = true,
     maindata      = null,
     data          = null,
@@ -51,7 +51,8 @@ var localJson = function(path){
 };
 
 var computeSync = function(origin,destination,callback){
-    distance.get(
+    googleDistance.apiKey = "AIzaSyBwP7ZYyCO86H41nE-E5eHYPCDir9yBpc0";
+    googleDistance.get(
         {
             origin: origin,
             destination: destination
@@ -66,20 +67,36 @@ var computeSync = function(origin,destination,callback){
             callback(data);
         });
 };
-function computeDistance(origin,destination) {
+
+var computeDistance = function(origin,destination) {
     computeSync(origin,destination, function(result){
+
         maindata = result;
     });
     while(finish) {
         require('deasync').sleep(100); // sync for google-distance api
     }
+    finish = true;
     return maindata;
-}
+};
 
-function computeScore(parent,sitter,filter,distance){
+var syncFunc = function(parent,sitter,filter,distance) {
+    computeScore(parent,sitter,filter,distance, function(result){
+        maindata = result;
+    });
+    while(finish) {
+        require('deasync').sleep(100);
+    }
+    finish = true;
+    return maindata;
+};
+
+var computeScore = function(parent,sitter,filter,distance,callback){
     //TODO: take care of filter
-    if(parent.child.age < sitter.minAge || parent.child.age > sitter.maxAge || sitter.hourFee > parent.maxPrice)
+    if(parent.children.age < sitter.minAge || parent.children.age > sitter.maxAge || sitter.hourFee > parent.maxPrice)
         return 0;
+    distance = distance.distance.split(' ');
+    distance = Number(distance[0]);
     if(distance <= 5)   // calculate location score, for each added 1 km more than 5, reduce 2
         locationScore = 100;
     else{
@@ -101,7 +118,8 @@ function computeScore(parent,sitter,filter,distance){
 
     //TODO: implement hobbies and expertise
     if(filter == null){
-        generalScore = (locationScore + experienceScore + educationScore + hobbiesScore + knowledgeScore)/5;
+        //generalScore = (locationScore + experienceScore + educationScore + hobbiesScore + knowledgeScore)/5;
+        generalScore = (locationScore + experienceScore)/2;
     }
     else{
         //TODO: implement filter score
@@ -115,19 +133,21 @@ function computeScore(parent,sitter,filter,distance){
     if(sitter.education.includes('highSchool'))
         generalScore += bonusScore;
 
+    if(generalScore > 100)
+        generalScore = 100;
+    maindata = data;
+    finish = false;
+    callback(generalScore);
 
 
-    return generalScore;
+};
 
-}
-
-exports.getMatchScore = function(req,res,next,callback){
+exports.getMatchScore = function(){
     data = jsonfile.readFileSync(localJSONPath);
     origin = data.parent.address.street + ' ' + data.parent.address.houseNumber + ' ' + data.parent.address.city;
     destination = data.sitter.address.street + ' ' + data.sitter.address.houseNumber + ' ' + data.sitter.address.city;
-
     distance = computeDistance(origin,destination);
-    score = computeScore(data.parent,data.sitter,null,distance)
+    score = syncFunc(data.parent,data.sitter,null,distance);
     if(score == 0){
         //TODO: return no match
     }
