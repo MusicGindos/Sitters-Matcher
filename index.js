@@ -24,10 +24,8 @@ app.use(function(req, res, next) {
 });
 
 app.get('/getMatchScore', function (req, res) {
-    console.log(matcher.getMatchScore());
-    res.status(200).json({'data':matcher.getMatchScore()});
-    //res.status(200).json(SittersData.getParentByEmail(req.body.email));
-    //res.status(200).json({'data': req.body.parent});
+    var data = matcher.getMatchScore();
+    res.status(200).json(data);
 });
 
 
