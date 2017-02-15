@@ -23,7 +23,7 @@
         "dust"
       ],
       "specialNeeds": [],
-      "Hobbies": [],
+      "hobbies": ["reading","math","sleeping"],
       "schoolAddress": {
         "city": "Tel Aviv",
         "street": "Arlozorov",
@@ -56,7 +56,7 @@
     "timezone":"GMT +6",
     "invites":[],
     "rating" :4.2,
-    "education":[],
+    "education":["college"],
     "personalityScore":85,
     "minAge":0,
     "maxAge":4,
@@ -65,7 +65,7 @@
     "workingHours":[],
     "availableNow": true,
     "experience":3,
-    "hobbies" :["reading","sleeping","studying"],
+    "hobbies" :["reading","math"],
     "mobility":false,
     "specialNeeds":[],
     "review":[]

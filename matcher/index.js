@@ -3,28 +3,27 @@
  */
 'use strict';
 
-var express		  = require('express'),
-    fs			  = require('fs'),
-    DEBUG         = true,
-    localJSONPath = "data/data.json",
-    jsonfile      = require('jsonfile'),
-    googleDistance= require('google-distance'),
-    finish        = true,
-    maindata      = null,
-    data          = null,
-    origin        = null,
-    destination   = null,
-    distance      = null,
-    score         = null,
-    generalScore  = 0,
-    locationScore = null,
-    experienceScore  = null,
-    educationScore  = null,
-    hobbiesScore  = null,
+var express		    = require('express'),
+    fs			    = require('fs'),
+    _               = require('lodash'),
+    DEBUG           = true,
+    localJSONPath   = "data/data.json",
+    jsonfile        = require('jsonfile'),
+    googleDistance  = require('google-distance'),
+    finish          = true,
+    maindata        = null,
+    data            = null,
+    origin          = null,
+    destination     = null,
+    distance        = null,
+    score           = null,
+    generalScore    = 0,
+    locationScore   = null,
+    experienceScore = null,
+    hobbiesScore    = null,
     knowledgeScore  = null,
-    bonusScore = 5;
-
-
+    result          = null,
+    bonusScore      = 5;
 
 
 var error = function(next, msg, status){
@@ -95,6 +94,12 @@ var computeScore = function(parent,sitter,filter,distance,callback){
     //TODO: take care of filter
     if(parent.children.age < sitter.minAge || parent.children.age > sitter.maxAge || sitter.hourFee > parent.maxPrice)
         return 0;
+    if(parent.children.specialNeeds.length != 0){
+        for (var i = 0, len = parent.children.specialNeeds.length; i < len; i++) {
+            if (_.indexOf(sitter.specialNeeds, parent.children.specialNeeds[i]) == -1)
+                return 0;  // sitter don't have the speicalNeed that the child need and the match score is 0
+        }
+    }
     distance = distance.distance.split(' ');
     distance = Number(distance[0]);
     if(distance <= 5)   // calculate location score, for each added 1 km more than 5, reduce 2
@@ -102,40 +107,74 @@ var computeScore = function(parent,sitter,filter,distance,callback){
     else{
         locationScore = 100 - ((distance-5) * 2);
     }
+    if(locationScore < 0)  // if the sitter is more than 50 kilometer from thr child address
+        locationScore = 0;
 
     if(sitter.experience >= 4)  // calculate experience by years
         experienceScore = 100;
-    else if(sitter.experience >=3)
+    else if(sitter.experience >= 3)
         experienceScore = 90;
-    else if(sitter.experience >=2)
+    else if(sitter.experience >= 2)
         experienceScore = 70;
-    else if(sitter.experience >=1)
+    else if(sitter.experience >= 1)
         experienceScore = 60;
-    else if(sitter.experience >=0)
+    else if(sitter.experience >= 0)
         experienceScore = 50;
     else
         experienceScore = 0;
 
-
-    //TODO: implement hobbies and expertise
-    if(filter == null){
-        //generalScore = (locationScore + experienceScore + educationScore + hobbiesScore + knowledgeScore)/5;
-        generalScore = (locationScore + experienceScore)/2;
+    if(parent.children.hobbies.length > 0){
+        _.forEach(parent.children.hobbies, function(hobbie) {
+            if(_.indexOf(sitter.hobbies,hobbie) > -1){ // check if sitter have the hobbies
+                hobbiesScore +=  (100 / parent.children.hobbies.length);
+            }
+        });
     }
     else{
+        hobbiesScore = -1;
+    }
+
+    if(parent.children.expertise.length > 0){
+        _.forEach(parent.children.expertise, function(exp) {
+            if(_.indexOf(sitter.expertise,exp) > -1){ // check if sitter have the expertise
+                knowledgeScore +=  (100 / parent.children.expertise.length);
+            }
+        });
+    }
+    else{
+        knowledgeScore = -1;
+    }
+
+
+    if(filter == null){
+        var divide = 2;
+        var score = locationScore + experienceScore;
+        if(knowledgeScore >= 0 ){
+            divide++;
+            score += knowledgeScore;
+        }
+        if(hobbiesScore >= 0){
+            divide++;
+            score += hobbiesScore;
+        }
+        generalScore = score/divide;
+    }
+    else{  // if user want to give priority to category
         //TODO: implement filter score
     }
+
     if(sitter.availableNow)
         generalScore += bonusScore;
     if(sitter.mobility)
         generalScore += bonusScore;
-    if(sitter.education.includes('college'))
+    if(_.indexOf(sitter.education,'college'))
         generalScore += bonusScore;
-    if(sitter.education.includes('highSchool'))
+    if(_.indexOf(sitter.education,'highSchool'))
         generalScore += bonusScore;
 
-    if(generalScore > 100)
+    if(generalScore > 100) // more than 100% match with the bonuses
         generalScore = 100;
+
     maindata = data;
     finish = false;
     callback(generalScore);
@@ -150,14 +189,9 @@ exports.getMatchScore = function(){
     distance = computeDistance(origin,destination);
     score = syncFunc(data.parent,data.sitter,null,distance);
     if(score == 0){
-        //TODO: return no match
+        return {"match_score":0};
     }
-    return score;
-
+    else{
+        return {"match_score":Math.ceil(score)};
+    }
 };
-
-
-
-
-
-
