@@ -68,7 +68,34 @@
     "maxAge":4,
     "currencyType":"dollar",
     "hourFee": 20,
-    "workingHours":[],
+    "workingHours":[
+      { "monday": [
+        { "start": "0900", "finish": "1300" },
+        { "start": "1400", "finish": "1800" }
+      ]},
+      { "tuesday": [
+        { "start": "0900", "finish": "1300" },
+        { "start": "1400", "finish": "1800" }
+      ]},
+      { "wednesday": [
+        { "start": "0900", "finish": "1300" },
+        { "start": "1400", "finish": "1800" }
+      ]},
+      { "thursday": [
+        { "start": "0900", "finish": "1300" },
+        { "start": "1400", "finish": "1800" }
+      ]},
+      { "friday": [
+        { "start": "0900", "finish": "1300" },
+        { "start": "1400", "finish": "1800" }
+      ]},
+      { "saturday":
+        []
+      },
+      { "sunday":
+        []
+      }
+    ],
     "availableNow": true,
     "experience":3,
     "hobbies" :["reading","math"],
